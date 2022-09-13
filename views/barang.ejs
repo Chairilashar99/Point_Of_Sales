@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>BREADS</title>
+    <link rel="stylesheet" href="/fontawesome/css/all.css">
+    <link rel="stylesheet" href="/stylesheets/bootstrap.css">
+    <link rel="stylesheet" href="/stylesheets/style.css">
+    <script src="/javascripts/jquery-3.6.1.js"></script>
+    <link rel="shortcut icon" href="#">
+</head>
+
+<body>
+    <div class="container">
+        <div class="card-header">
+            <h1>Barang</h1>
+            <table class="table table-striped">
+                <thead id="sorting">
+                    <tr>
+                        <th>No.</th>
+                        <th>id_barang</th>
+                        <th>nama_barang</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+
+            <div class="row">
+                <div class="col-6">
+                    <ul aria-label="Page navigation" id="pagination">
+                    </ul>
+                </div>
+                <div class="col-6">
+                    <div class="row">
+
+                    </div>
+                </div>
+
+            </div>
+            <form id="form-user">
+                <input type="hidden" id="id" name="id" value="">
+                <div class="card">
+                    <div class="card-header">
+                        <h2>Form Barang</h2>
+                    </div>
+
+                    <div class="card-body">
+
+                        <div class="row mb-3">
+                            <label for="id_barangs" class="col-sm-2 col-form-label">id_barang</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" id="id_barangs1" name="id_barangs1" required>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <label for="nama_barangs" class="col-sm-2 col-form-label">nama_barang</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" id="nama_barangs1" name="nama_barangs1"
+                                    required>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <button type="submit" class="btn btn-primary">Save</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+</body>
+<script>
+    var params = {
+        display: 3,
+        page: 1
+    }
+    const readData = () => {
+        $.ajax({
+            method: "GET",
+            url: "http://localhost:3000/barang",
+            dataType: "json",
+            headers: {
+                json: true
+            },
+            data: params
+        }).done(function (response) {
+            let html = ''
+            response.data.forEach((item, index) => {
+                html += `
+    <tr>
+      <td>${index + 1}</td>
+      <td>${item.id_barang}</td>
+      <td>${item.nama_barang}</td>
+      <td>
+        <button type="button" class="btn btn-success btn-sm btn-edit" id_data="${item._id}"><i class="fa-solid fa-pencil"></i></button>
+        <button type="button" class="btn btn-danger btn-sm btn-delete" id_data="${item._id}"><i class="fa-solid fa-trash-can"></i></button>
+      </td>
+    </tr>
+    `
+            });
+            $('table tbody').html(html)
+        }).fail(function (err) {
+            alert('gagal jquery')
+        })
+    }
+
+    const saveData = (id_barang, nama_barang) => {
+        if (id_barang) {
+            $.ajax({
+                method: "PUT",
+                url: `http://localhost:3000/barang/${id_barang}`,
+                dataType: "json",
+                headers: {
+                    json: true
+                },
+                data: { nama_barang }
+            }).done(function (response) {
+                readData()
+                $('#id_barang').val('')
+                $("#form-user").trigger("reset");
+            }).fail(function (err) {
+                alert('gagal pake jquery save')
+            })
+        } else {
+            $.ajax({
+                method: "POST",
+                url: `http://localhost:3000/barang`,
+                dataType: "json",
+                headers: {
+                    json: true
+                },
+                data: { id_barang, nama_barang }
+            }).done(function (response) {
+                readData()
+                $("#form-user").trigger("reset");
+            }).fail(function (err) {
+                alert('gagal pake jquery save')
+            })
+        }
+    }
+
+    const editData = (id_barang) => {
+        $.ajax({
+            method: "GET",
+            url: `http://localhost:3000/barang/${id_barang}`,
+            dataType: "json",
+            headers: {
+                json: true
+            },
+        }).done(function (response) {
+            $('#id_barang').val(response.id_barang)
+            $('#nama_barang').val(response.nama_barang)
+        }).fail(function (err) {
+            alert('gagal pake jquery')
+        })
+    }
+
+    const deleteData = (id_barang) => {
+        $.ajax({
+            method: "DELETE",
+            url: `http://localhost:3000/barang/${id_barang}`,
+            dataType: "json",
+            headers: {
+                json: true
+            },
+        }).done(function (response) {
+            readData()
+        }).fail(function (err) {
+            alert('gagal pake jquery')
+        })
+    }
+
+    $(document).ready(function () {
+        readData()
+
+        $('#form-user').submit(function (event) {
+            event.preventDefault();
+            const id_barang = $('#id_barang').val()
+            const nama_barang = $('#nama_barang').val()
+
+            saveData(id_barang, nama_barang)
+        })
+
+        $('table tbody').on('click', '.btn-edit', function () {
+            const id = $(this).attr('id_data')
+            console.log('id', id)
+        })
+
+        $('table tbody').on('click', '.btn-delete', function () {
+            const id = $(this).attr('id_data')
+        })
+
+
+    })
+
+</script>
+</body>
+
+</html>

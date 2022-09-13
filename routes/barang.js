@@ -39,15 +39,16 @@ module.exports = function (pool) {
 
   });
 
-  router.get('/:id', async function (req, res) {
+  router.get('/:id_barang', async function (req, res) {
     const { json } = req.headers
 
     try {
       let id = req.params.id_barang
       let sql = 'SELECT * FROM barang WHERE id_barang = $1'
-      const editGet = await pool.query(sql, [id])
+      const {rows} = await pool.query(sql, [id])
+      console.log(rows)
       if (json == 'true') {
-        res.status(200).json(editGet)
+        res.status(200).json(rows)
       } else {
         res.render('barang')
       }

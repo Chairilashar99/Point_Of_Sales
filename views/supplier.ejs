@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>BREADS</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-u1OknCvxWvY5kfmNBILK2hRnQC3Pr17a+RTT6rIHI7NnikvbZlHgTPOOmMi466C8"
+        crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="/fontawesome/css/all.css">
+    <link rel="stylesheet" href="/stylesheets/bootstrap.css">
+    <link rel="stylesheet" href="/stylesheets/style.css">
+    <script src="/javascripts/jquery-3.6.1.js"></script>
+    <link rel="shortcut icon" href="#">
+
+  
+</head>
+
+<body>
+    <div class="container">
+        <div class="card-header">
+            <h1>Supplier</h1>
+            <table class="table table-striped">
+                <thead id="sorting">
+                    <tr>
+                        <th>id_supplier</th>
+                        <th>name</th>
+                        <th>alamat</th>
+                        <th>telp</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+
+            <div class="row">
+                <div class="col-6">
+                    <ul aria-label="Page navigation" id="pagination">
+                    </ul>
+                </div>
+                <div class="col-6">
+                    <div class="row">
+
+                    </div>
+                </div>
+
+            </div>
+            <form id="form-tambah">
+                <input type="hidden" id="id" name="id" value="">
+                <div class="card">
+                    <div class="card-header">
+                        <h2>Form Supplier Tambah</h2>
+                    </div>
+
+                    <div class="card-body">
+
+                        <div class="row mb-3">
+                            <label for="id_supplier" class="col-sm-2 col-form-label">id_supplier</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" id="id_supplier" name="Id_supplier" required>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <label for="name" class="col-sm-2 col-form-label">name</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" id="name" name="Name" required>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <label for="alamat" class="col-sm-2 col-form-label">alamat</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" id="alamat" name="Alamat" required>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <label for="telp" class="col-sm-2 col-form-label">telp</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" id="telp" name="Telp" required>
+                            </div>
+                        </div>
+                    <div class="card-footer">
+                        <button type="submit" class="btn btn-primary">Save</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <form id="form-edit">
+            <input type="hidden" id="id" name="id" value="">
+            <div class="card">
+                <div class="card-header">
+                    <h2>Form Supplier Edit</h2>
+                </div>
+
+                <div class="card-body">
+
+                    <div class="row mb-3">
+                        <label for="id_supplier" class="col-sm-2 col-form-label">id_supplier</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="id_supplieredit" name="Id_supplier" required>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <label for="name" class="col-sm-2 col-form-label">name</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="nameedit" name="Name" required>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <label for="alamat" class="col-sm-2 col-form-label">alamat</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="alamatedit" name="Alamat" required>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <label for="telp" class="col-sm-2 col-form-label">telp</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="telpedit" name="Telp" required>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <button type="submit" class="btn btn-primary">Edit</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</body>
+<script>
+    var params = {
+        display: 3,
+        page: 1
+    }
+    const readData = () => {
+        $.ajax({
+            method: "GET",
+            url: "http://localhost:3000/supplier",
+            dataType: "json",
+            headers: {
+                json: true
+            },
+            data: params
+        }).done(function (data) {
+            let html = ''
+            data.forEach((item, index) => {
+                html += `
+    <tr>
+      <td>${item.id_supplier}</td>
+      <td>${item.name}</td>
+      <td>${item.alamat}</td>
+      <td>${item.telp}</td>
+      <td>
+        <button type="button" class="btn btn-success btn-sm btn-edit" id_data="${item.id_supplier}"><i class="fa-solid fa-pencil"></i></button>
+        <button type="button" class="btn btn-danger btn-sm btn-delete" id_data="${item.id_supplier}"><i class="fa-solid fa-trash-can"></i></button>
+      </td>
+    </tr>
+    `
+            });
+            $('table tbody').html(html)
+        }).fail(function (err) {
+            alert('gagal jquery')
+        })
+    }
+
+    const saveData = (id_supplier, name, alamat, telp) => {
+        $.ajax({
+            method: "POST",
+            url: `http://localhost:3000/supplier`,
+            dataType: "json",
+            headers: {
+                json: true
+            },
+            data: { id_supplier, name, alamat, telp }
+        }).done(function (response) {
+            readData()
+            $("#form-tambah").trigger("reset");
+        }).fail(function (err) {
+            alert('gagal pake jquery')
+        })
+    }
+
+
+    const saveEdit = (id_supplier, name, alamat, telp) => {
+        $.ajax({
+            method: "PUT",
+            url: `http://localhost:3000/supplier/${id_supplier}`,
+            dataType: "json",
+            headers: {
+                json: true
+            },
+            data: { name, alamat, telp }
+        }).done(function (response) {
+            readData()
+            $('#id_supplieredit').val('')
+            $("#form-edit").trigger("reset");
+        }).fail(function (err) {
+            console.log(err)
+            alert('gagal jquery')
+        })
+    }
+
+    const editData = (id) => {
+        $.ajax({
+            method: "GET",
+            url: `http://localhost:3000/supplier/${id}`,
+            dataType: "json",
+            headers: {
+                json: true
+            },
+        }).done(function (data) {
+            $('#id_supplieredit').val(data[0].id_supplier)
+            $('#nameedit').val(data[0].name)
+            $('#alamatedit').val(data[0].alamat)
+            $('#telpedit').val(data[0].telp)
+        }).fail(function (err) {
+            alert('gagal pake jquery')
+        })
+    }
+
+    const deleteData = (id) => {
+        $.ajax({
+            method: "DELETE",
+            url: `http://localhost:3000/supplier/${id}`,
+            dataType: "json",
+            headers: {
+                json: true
+            },
+        }).done(function (response) {
+            readData()
+        }).fail(function (err) {
+            alert('gagal pake jquery')
+        })
+    }
+
+    $(document).ready(function () {
+        readData()
+
+        $('#form-tambah').submit(function (event) {
+            event.preventDefault();
+            const id_supplier = $('#id_supplier').val()
+            const name = $('#name').val()
+            const alamat = $('#alamat').val()
+            const telp = $('#telp').val()
+
+            saveData(id_supplier, name, alamat, telp)
+        })
+
+        $('#form-edit').submit(function (event) {
+            event.preventDefault();
+            const id_supplier = $('#id_supplieredit').val()
+            const name = $('#nameedit').val()
+            const alamat = $('#alamatedit').val()
+            const telp = $('#telpedit').val()
+
+            saveEdit(id_supplier, name, alamat, telp)
+        })
+
+
+        $('table tbody').on('click', '.btn-edit', function () {
+            const id = $(this).attr('id_data')
+           
+            editData(id)
+        })
+
+        $('table tbody').on('click', '.btn-delete', function () {
+            const id = $(this).attr('id_data')
+            deleteData(id)
+        })
+
+
+    })
+
+</script>
+</body>
+
+</html> -->

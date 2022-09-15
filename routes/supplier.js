@@ -22,8 +22,8 @@ module.exports = function (pool) {
         const { json } = req.headers
 
         try {
-            let sql = `INSERT INTO supplier(id_supplier, name, alamat, telp) VALUES ($1, $2, $3, $4)`
-            const post = await pool.query(sql, [req.body.id_supplier, req.body.name, req.body.alamat, req.body.telp])
+            let sql = `INSERT INTO supplier(name, alamat, telp) VALUES ($1, $2, $3)`
+            const post = await pool.query(sql, [ req.body.name, req.body.alamat, req.body.telp])
             if (json == 'true') {
                 res.status(200).json(post)
             } else {
@@ -63,7 +63,7 @@ module.exports = function (pool) {
         try {
             let sql = `UPDATE supplier SET 
               name = $1,
-              alamat = $2
+              alamat = $2,
               telp = $3
               WHERE id_supplier = $4`
 
@@ -104,4 +104,3 @@ module.exports = function (pool) {
 
     return router;
 }
-

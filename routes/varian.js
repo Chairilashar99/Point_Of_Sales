@@ -7,7 +7,7 @@ var moment = require('moment');
 
 module.exports = function (pool) {
 
-    router.get('/', isLoggedIn, function (req, res) {
+    router.get('/', function (req, res) {
         let limit = 5
         let currentOffset;
         let totalPage;
@@ -107,7 +107,7 @@ INNER JOIN gudang gud ON gud.id_gudang = var.id_gudang`
         })
     })
 
-    router.get('/api', isLoggedIn, (req, res) => {
+    router.get('/api', (req, res) => {
 
         db.query(`SELECT var.barcode,
         var.varian_name,
@@ -139,7 +139,7 @@ INNER JOIN gudang gud ON gud.id_gudang = var.id_gudang`, (err, rows) => {
         })
     })
 
-    router.get('/api/:id', isLoggedIn, (req, res) => {
+    router.get('/api/:id', (req, res) => {
 
         db.query(`SELECT var.barcode,
         var.varian_name,
@@ -171,7 +171,7 @@ INNER JOIN gudang gud ON gud.id_gudang = var.id_gudang WHERE var.id_barang = $1`
         })
     })
 
-    router.get('/info/:id', isLoggedIn, (req, res) => {
+    router.get('/info/:id', (req, res) => {
 
         db.query(`SELECT var.barcode,
         var.varian_name,
@@ -203,7 +203,7 @@ INNER JOIN gudang gud ON gud.id_gudang = var.id_gudang WHERE barcode = $1;`, [re
         })
     })
 
-    router.get('/add', isLoggedIn, function (req, res) {
+    router.get('/add', function (req, res) {
         db.query('SELECT * FROM barang', (err, rowsB) => {
             if (err) console.log(err)
             db.query('SELECT * FROM satuan', (err, rowsS) => {
@@ -220,17 +220,17 @@ INNER JOIN gudang gud ON gud.id_gudang = var.id_gudang WHERE barcode = $1;`, [re
     })
 
     router.post('/add', function (req, res) {
-        let gambar;
+        let pictures;
         let uploadPath;
         if (!req.files || Object.keys(req.files).length === 0) {
             return res.status(400).send('No files were uploaded.');
         }
-        // The name of the input field (i.e. "gambar") is used to retrieve the uploaded file
-        gambar = req.files.gambar;
-        const filename = `A${Date.now()}-${gambar.name}`
-        uploadPath = path.join(__dirname, '/../public', 'gambar', filename);
+        // The name of the input field (i.e. "pictures") is used to retrieve the uploaded file
+        pictures = req.files.pictures;
+        const filename = `A${Date.now()}-${pictures.name}`
+        uploadPath = path.join(__dirname, '/../public', 'pictures', filename);
         // Use the mv() method to place the file somewhere on your server
-        gambar.mv(uploadPath, function (err) {
+        pictures.mv(uploadPath, function (err) {
             if (err)
                 return res.status(500).send(err);
             const { generate, custom_input, nama, barang, stok, harga_beli, satuan, gudang, harga_jual } = req.body
@@ -266,7 +266,7 @@ INNER JOIN gudang gud ON gud.id_gudang = var.id_gudang WHERE barcode = $1;`, [re
 
     })
 
-    router.get('/edit/:id', isLoggedIn, (req, res) => {
+    router.get('/edit/:id', (req, res) => {
         db.query('SELECT * FROM barang', (err, rowsB) => {
             if (err) console.log(err)
             db.query('SELECT * FROM satuan', (err, rowsS) => {
@@ -304,7 +304,7 @@ INNER JOIN gudang gud ON gud.id_gudang = var.id_gudang WHERE barcode = $1;`, [re
 
     router.post('/edit/:id', function (req, res) {
         const { custom_input, nama, barang, stok, harga_beli, satuan, gudang, saved_pictures, harga_jual } = req.body
-        let gambar;
+        let pictures;
         let uploadPath;
         if (!req.files || Object.keys(req.files).length === 0) {
             db.query(`UPDATE varian set 
@@ -323,7 +323,7 @@ INNER JOIN gudang gud ON gud.id_gudang = var.id_gudang WHERE barcode = $1;`, [re
                 res.redirect('/varian')
             })
         } else {
-            // The name of the input field (i.e. "gambar") is used to retrieve the uploaded file
+            // The name of the input field (i.e. "pictures") is used to retrieve the uploaded file
             pictures = req.files.pictures;
             const filename = `A${Date.now()}-${pictures.name}`
             uploadPath = path.join(__dirname, '/../public', 'pictures', filename);
@@ -351,7 +351,7 @@ INNER JOIN gudang gud ON gud.id_gudang = var.id_gudang WHERE barcode = $1;`, [re
             })
         }
     })
-    router.get('/delete/:id', isLoggedIn, (req, res) => {
+    router.get('/delete/:id', (req, res) => {
 
         db.query('DELETE FROM varian WHERE barcode = $1', [req.params.id], (err) => {
             if (err) {

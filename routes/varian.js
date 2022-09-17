@@ -8,6 +8,7 @@ var moment = require('moment');
 module.exports = function (pool) {
 
     router.get('/', function (req, res) {
+        const { json } = req.headers
         let limit = 5
         let currentOffset;
         let totalPage;
@@ -41,8 +42,6 @@ module.exports = function (pool) {
             }
         }
 
-
-
         const { cari_id, cari_nama } = req.query
         let search = []
         let count = 1
@@ -56,15 +55,9 @@ module.exports = function (pool) {
       var.stock,
       var.buy_price,
       var.sell_price,
-      sat.id_satuan,
-      sat.nama_satuan,
-      gud.id_gudang,
-      gud.nama_gudang,
       var.pictures
 FROM varian var
-INNER JOIN barang bar ON bar.id_barang = var.id_barang
-INNER JOIN satuan sat ON sat.id_satuan = var.id_satuan
-INNER JOIN gudang gud ON gud.id_gudang = var.id_gudang`
+INNER JOIN barang bar ON bar.id_barang = var.id_barang`
         if (cari_id) {
             sql += ' WHERE '
             sql_count += ' WHERE '
@@ -108,7 +101,7 @@ INNER JOIN gudang gud ON gud.id_gudang = var.id_gudang`
     })
 
     router.get('/api', (req, res) => {
-
+        const { json } = req.headers
         db.query(`SELECT var.barcode,
         var.varian_name,
         bar.id_barang,
@@ -116,15 +109,9 @@ INNER JOIN gudang gud ON gud.id_gudang = var.id_gudang`
           var.stock,
           var.buy_price,
           var.sell_price,
-          sat.id_satuan,
-          sat.nama_satuan,
-          gud.id_gudang,
-          gud.nama_gudang,
           var.pictures
 FROM varian var
-INNER JOIN barang bar ON bar.id_barang = var.id_barang
-INNER JOIN satuan sat ON sat.id_satuan = var.id_satuan
-INNER JOIN gudang gud ON gud.id_gudang = var.id_gudang`, (err, rows) => {
+INNER JOIN barang bar ON bar.id_barang = var.id_barang`, (err, rows) => {
             if (err) {
                 console.log(err)
                 return res.status(500).json({ message: "error ambil data", error: `${err}` })
@@ -140,7 +127,7 @@ INNER JOIN gudang gud ON gud.id_gudang = var.id_gudang`, (err, rows) => {
     })
 
     router.get('/api/:id', (req, res) => {
-
+        const { json } = req.headers
         db.query(`SELECT var.barcode,
         var.varian_name,
         bar.id_barang,
@@ -148,15 +135,9 @@ INNER JOIN gudang gud ON gud.id_gudang = var.id_gudang`, (err, rows) => {
           var.stock,
           var.buy_price,
           var.sell_price,
-          sat.id_satuan,
-          sat.nama_satuan,
-          gud.id_gudang,
-          gud.nama_gudang,
           var.pictures
 FROM varian var
-INNER JOIN barang bar ON bar.id_barang = var.id_barang
-INNER JOIN satuan sat ON sat.id_satuan = var.id_satuan
-INNER JOIN gudang gud ON gud.id_gudang = var.id_gudang WHERE var.id_barang = $1`, [req.params.id], (err, rows) => {
+INNER JOIN barang bar ON bar.id_barang = var.id_barang WHERE var.id_barang = $1`, [req.params.id], (err, rows) => {
             if (err) {
                 console.log(err)
                 return res.status(500).json({ message: "error ambil data", error: `${err}` })
@@ -172,7 +153,7 @@ INNER JOIN gudang gud ON gud.id_gudang = var.id_gudang WHERE var.id_barang = $1`
     })
 
     router.get('/info/:id', (req, res) => {
-
+        const { json } = req.headers
         db.query(`SELECT var.barcode,
         var.varian_name,
         bar.id_barang,
@@ -180,15 +161,9 @@ INNER JOIN gudang gud ON gud.id_gudang = var.id_gudang WHERE var.id_barang = $1`
           var.stock,
           var.buy_price,
           var.sell_price,
-          sat.id_satuan,
-          sat.nama_satuan,
-          gud.id_gudang,
-          gud.nama_gudang,
           var.pictures
 FROM varian var
-INNER JOIN barang bar ON bar.id_barang = var.id_barang
-INNER JOIN satuan sat ON sat.id_satuan = var.id_satuan
-INNER JOIN gudang gud ON gud.id_gudang = var.id_gudang WHERE barcode = $1;`, [req.params.id], (err, rows) => {
+INNER JOIN barang bar ON bar.id_barang = var.id_barang WHERE barcode = $1;`, [req.params.id], (err, rows) => {
             if (err) {
                 console.log(err)
                 return res.status(500).json({ message: "error ambil data", error: `${err}` })
@@ -204,22 +179,18 @@ INNER JOIN gudang gud ON gud.id_gudang = var.id_gudang WHERE barcode = $1;`, [re
     })
 
     router.get('/add', function (req, res) {
+        const { json } = req.headers
         db.query('SELECT * FROM barang', (err, rowsB) => {
             if (err) console.log(err)
-            db.query('SELECT * FROM satuan', (err, rowsS) => {
-                if (err) console.log(err)
-                db.query('SELECT * FROM gudang', (err, rowsG) => {
-                    if (err) console.log(err)
-                    const barang = rowsB.rows
-                    const satuan = rowsS.rows
-                    const gudang = rowsG.rows
-                    res.render('varian_add', { currentDir: 'varian', current: '', barang, satuan, gudang, moment });
-                })
-            })
+
+            const barang = rowsB.rows
+
+            res.render('varian_add', { currentDir: 'varian', current: '', barang, satuan, gudang, moment });
         })
     })
 
     router.post('/add', function (req, res) {
+        const { json } = req.headers
         let pictures;
         let uploadPath;
         if (!req.files || Object.keys(req.files).length === 0) {
@@ -233,15 +204,15 @@ INNER JOIN gudang gud ON gud.id_gudang = var.id_gudang WHERE barcode = $1;`, [re
         pictures.mv(uploadPath, function (err) {
             if (err)
                 return res.status(500).send(err);
-            const { generate, custom_input, nama, barang, stok, harga_beli, satuan, gudang, harga_jual } = req.body
+            const { generate, custom_input, nama, stok, harga_jual, harga_beli, barang} = req.body
             if (generate == 'on') {
                 db.query('SELECT * FROM barcode_varian()', (err, rows) => {
                     if (err) console.log(err)
                     let barcode = rows.rows[0].barcode_varian
-                    db.query(`INSERT INTO varian(barcode, varian_name, id_barang,
-                stock, buy_price, id_satuan,
-                 id_gudang, pictures, sell_price) 
-             VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)`, [barcode, nama, barang, stok, harga_beli, satuan, gudang, filename, harga_jual], (err) => {
+                    db.query(`INSERT INTO varian(barcode, varian_name,
+                stock, pictures, sell_price,
+                 buy_price, id_barang) 
+             VALUES ($1, $2, $3, $4, $5, $6, $7)`, [barcode, nama, stok, filename, harga_jual, harga_beli, barang], (err) => {
                         if (err) {
                             return console.error(err.message);
                         }
@@ -251,10 +222,10 @@ INNER JOIN gudang gud ON gud.id_gudang = var.id_gudang WHERE barcode = $1;`, [re
             }
             if (generate == 'off') {
                 let barcode = custom_input
-                db.query(`INSERT INTO varian(barcode, varian_name, id_barang,
-        stock, buy_price, id_satuan,
-         id_gudang, pictures, sell_price) 
-     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)`, [barcode, nama, barang, stok, harga_beli, satuan, gudang, filename, harga_jual], (err) => {
+                db.query(`INSERT INTO varian(barcode, varian_name,
+                     stock,pictures, sell_price,
+                      buy_price,id_barang) 
+     VALUES ($1, $2, $3, $4, $5, $6, $7)`, [barcode, nama, stok, filename, harga_jual, harga_beli, barang], (err) => {
                     if (err) {
                         return console.error(err.message);
                     }
@@ -262,61 +233,47 @@ INNER JOIN gudang gud ON gud.id_gudang = var.id_gudang WHERE barcode = $1;`, [re
                 })
             }
         });
-
-
     })
 
     router.get('/edit/:id', (req, res) => {
+        const { json } = req.headers
         db.query('SELECT * FROM barang', (err, rowsB) => {
             if (err) console.log(err)
-            db.query('SELECT * FROM satuan', (err, rowsS) => {
-                if (err) console.log(err)
-                db.query('SELECT * FROM gudang', (err, rowsG) => {
-                    if (err) console.log(err)
-                    const barang = rowsB.rows
-                    const satuan = rowsS.rows
-                    const gudang = rowsG.rows
-                    db.query(`SELECT var.barcode,
+
+
+            const barang = rowsB.rows
+            db.query(`SELECT var.barcode,
                     var.varian_name,
                     bar.id_barang,
                     bar.nama_barang,
                       var.stock,
                       var.buy_price,
                       var.sell_price,
-                      sat.id_satuan,
-                      sat.nama_satuan,
-                      gud.id_gudang,
-                      gud.nama_gudang,
                       var.pictures
 FROM varian var
-INNER JOIN barang bar ON bar.id_barang = var.id_barang
-INNER JOIN satuan sat ON sat.id_satuan = var.id_satuan
-INNER JOIN gudang gud ON gud.id_gudang = var.id_gudang WHERE barcode = $1;`, [req.params.id], (err, rows) => {
-                        if (err) {
-                            return console.error(err.message);
-                        }
-                        res.render('varian_edit', { rows: rows.rows, currentDir: 'varian', current: '', barang, satuan, gudang });
-                    })
-                })
+INNER JOIN barang bar ON bar.id_barang = var.id_barang WHERE barcode = $1;`, [req.params.id], (err, rows) => {
+                if (err) {
+                    return console.error(err.message);
+                }
+                res.render('varian_edit', { rows: rows.rows, currentDir: 'varian', current: '', barang, satuan, gudang });
             })
         })
     })
 
-    router.post('/edit/:id', function (req, res) {
-        const { custom_input, nama, barang, stok, harga_beli, satuan, gudang, saved_pictures, harga_jual } = req.body
+    router.post('/edit/:id', async function (req, res) {
+        const { json } = req.headers
+        const { custom_input,nama, stok, saved_pictures, harga_jual, harga_beli, barang } = req.body
         let pictures;
         let uploadPath;
         if (!req.files || Object.keys(req.files).length === 0) {
             db.query(`UPDATE varian set 
-     varian_name = $1,
-      id_barang = $2,
-       stock = $3,
-        buy_price = $4,
-         id_satuan = $5,
-        id_gudang = $6,
-         pictures = $7,
-         sell_price = $8
-    WHERE barcode = $9`, [nama, barang, stok, harga_beli, satuan, gudang, saved_pictures, harga_jual, custom_input], (err) => {
+                varian_name = $1,
+                stock = $2,
+                 pictures = $3,
+                  sell_price = $4,
+                   buy_price = $5,
+                  id_barang = $6,
+              WHERE barcode = $7`, [nama, stok, saved_pictures, harga_jual, harga_beli, barang, custom_input], (err) => {
                 if (err) {
                     return console.error(err.message);
                 }
@@ -335,14 +292,12 @@ INNER JOIN gudang gud ON gud.id_gudang = var.id_gudang WHERE barcode = $1;`, [re
 
                 db.query(`UPDATE varian set 
                 varian_name = $1,
-                id_barang = $2,
-                 stock = $3,
-                  buy_price = $4,
-                   id_satuan = $5,
-                  id_gudang = $6,
-                   pictures = $7,
-                   sell_price = $8
-              WHERE barcode = $9`, [nama, barang, stok, harga_beli, satuan, gudang, saved_pictures, harga_jual, custom_input], (err) => {
+                stock = $2,
+                 pictures = $3,
+                  sell_price = $4,
+                   buy_price = $5,
+                  id_barang = $6,
+              WHERE barcode = $7`, [nama, stok, saved_pictures, harga_jual, harga_beli, barang, custom_input], (err) => {
                     if (err) {
                         return console.error(err.message);
                     }
@@ -351,14 +306,24 @@ INNER JOIN gudang gud ON gud.id_gudang = var.id_gudang WHERE barcode = $1;`, [re
             })
         }
     })
-    router.get('/delete/:id', (req, res) => {
+    router.get('/delete/:barcode', async function (req, res) {
+        const { json } = req.headers
+        try {
+            let id = req.params.barcode
+            let sql = `DELETE FROM varian WHERE barcode = $1`;
 
-        db.query('DELETE FROM varian WHERE barcode = $1', [req.params.id], (err) => {
-            if (err) {
-                return console.error(err.message);
+            const hapus = await pool.query(sql, [id])
+            if (json == 'true') {
+                res.status(200).json(hapus)
+            } else {
+                res.render('varian')
             }
-            res.redirect('/')
-        })
-    })
+        } catch (error) {
+            res.status(500)
+        }
+
+    });
+
     return router;
 }
+

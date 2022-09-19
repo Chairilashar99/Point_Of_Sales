@@ -3,6 +3,7 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+const fileUpload = require('express-fileupload');
 
 
 const {Pool,Client} = require('pg')
@@ -20,7 +21,7 @@ var usersRouter = require('./routes/users')(pool);
 var barangRouter = require('./routes/barang')(pool);
 var satuanRouter = require('./routes/satuan')(pool);
 var supplierRouter = require('./routes/supplier')(pool);
-// var varianRouter = require('./routes/varian')(pool);
+var varianRouter = require('./routes/varian')(pool);
 var gudangRouter = require('./routes/gudang')(pool);
 // var pembelianRouter = require('./routes/pembelian_barang')(pool);
 // var pembeliandetailRouter = require('./routes/pembelian_detail')(pool);
@@ -41,13 +42,14 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(fileUpload());
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/barang', barangRouter);
 app.use('/satuan', satuanRouter);
 app.use('/supplier', supplierRouter);
-// app.use('/varian', varianRouter);
+app.use('/varian', varianRouter);
 app.use('/gudang', gudangRouter);
 // app.use('/pembelian', pembelianRouter);
 // app.use('/pembelian_router', pembeliandetailRouter);

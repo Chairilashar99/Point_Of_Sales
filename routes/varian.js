@@ -23,15 +23,15 @@ module.exports = function (pool) {
     INNER JOIN barang bar ON bar.id_barang = var.id_barang`
 
 
-            const { rows } = await pool.query(sql, (err, rows) => {
+            const data = await pool.query(sql)
+            console.log(data)
+            if (json == 'true') {
+                res.status(200).json(data.rows)
+            } else {
+                res.render('varian')
+            }
 
-                if (json == 'true') {
-                    res.status(200).json(rows)
-                } else {
-                    res.render('varian')
-                }
 
-            })
 
         } catch (err) {
             console.log(err)
@@ -40,29 +40,17 @@ module.exports = function (pool) {
     })
 
 
-    router.get('/api', async function (req, res) {
+    router.get('/select', async function (req, res) {
         const { json } = req.headers
 
         try {
-            let sql = `SELECT var.barcode,
-          var.varian_name,
-          bar.id_barang,
-          bar.nama_barang,
-            var.stock,
-            var.buy_price,
-            var.sell_price,
-            var.pictures
-      FROM varian var
-INNER JOIN barang bar ON bar.id_barang = var.id_barang`
-            const { rows } = await pool.query(sql, (err, rows) => {
-
-                if (json == 'true') {
-                    res.status(200).json(rows)
-                } else {
-                    res.render('varian')
-                }
-
-            })
+            let sql = `SELECT id_barang, nama_barang FROM barang`
+            const { rows } = await pool.query(sql)
+            if (json == 'true') {
+                res.status(200).json(rows)
+            } else {
+                res.render('varian')
+            }
 
         } catch (err) {
             console.log(err)
@@ -71,10 +59,12 @@ INNER JOIN barang bar ON bar.id_barang = var.id_barang`
     })
 
 
-    router.get('/api/:id', (req, res) => {
+    router.get('/api/:id', async function (req, res) {
         const { json } = req.headers
 
-        db.query(`SELECT var.barcode,
+        try {
+            let id = req.params.id
+            let sql = `SELECT var.barcode,
         var.varian_name,
         bar.id_barang,
         bar.nama_barang,
@@ -83,25 +73,26 @@ INNER JOIN barang bar ON bar.id_barang = var.id_barang`
           var.sell_price,
           var.pictures
 FROM varian var
-INNER JOIN barang bar ON bar.id_barang = var.id_barang WHERE var.id_barang = $1`, [req.params.id], (err, rows) => {
-            if (err) {
-                console.log(err)
-                return res.status(500).json({ message: "error ambil data", error: `${err}` })
+INNER JOIN barang bar ON bar.id_barang = var.id_barang WHERE var.id_barang = $1`
+            const { rows } = await pool.query(sql, [id])
+            if (json == 'true') {
+                res.status(200).json(rows)
+            } else {
+                res.render('varian')
             }
-            if (rows.rows.length == 0) {
-                return res.status(500).json({ message: "data not found" })
-            }
-            const data = rows.rows
-            data['currentDir'] = 'varian'
-            data['current'] = ''
-            res.status(200).json(data)
-        })
-    })
+        } catch (e) {
+            console.log(e)
+            res.status(500).json({ message: 'ini eror' })
+        }
 
-    router.get('/info/:id', (req, res) => {
+    });
+
+    router.get('/info/:id', async function (req, res) {
         const { json } = req.headers
 
-        db.query(`SELECT var.barcode,
+        try {
+            let id = req.params.id
+            let sql = `SELECT var.barcode,
         var.varian_name,
         bar.id_barang,
         bar.nama_barang,
@@ -110,32 +101,36 @@ INNER JOIN barang bar ON bar.id_barang = var.id_barang WHERE var.id_barang = $1`
           var.sell_price,
           var.pictures
 FROM varian var
-INNER JOIN barang bar ON bar.id_barang = var.id_barang WHERE barcode = $1;`, [req.params.id], (err, rows) => {
-            if (err) {
-                console.log(err)
-                return res.status(500).json({ message: "error ambil data", error: `${err}` })
+INNER JOIN barang bar ON bar.id_barang = var.id_barang WHERE barcode = $1;`
+            const { rows } = await pool.query(sql, [id])
+            if (json == 'true') {
+                res.status(200).json(rows)
+            } else {
+                res.render('varian')
             }
-            if (rows.rows.length == 0) {
-                return res.status(500).json({ message: "data not found" })
-            }
-            const data = rows.rows[0]
-            data['currentDir'] = 'varian'
-            data['current'] = ''
-            res.status(200).json(data)
-        })
-    })
+        } catch (e) {
+            console.log(e)
+            res.status(500).json({ message: 'ini eror' })
+        }
 
-    router.get('/add', function (req, res) {
+    });
+
+    router.get('/add', async function (req, res) {
         const { json } = req.headers
 
-        db.query('SELECT * FROM barang', (err, rowsB) => {
-            if (err) console.log(err)
+        try {
+            const { rows } = await pool.query('SELECT * FROM barang');
+            if (json == 'true') {
+                res.status(200).json(rows)
+            } else {
+                res.render('varian_add')
+            }
+        } catch (e) {
+            console.log(e)
+            res.status(500).json({ message: 'ini eror' })
+        }
 
-            const barang = rowsB.rows
-
-            res.render('varian_add', { currentDir: 'varian', current: '', barang, satuan, gudang, moment });
-        })
-    })
+    });
 
     router.post('/add', function (req, res) {
         const { json } = req.headers
@@ -184,15 +179,12 @@ INNER JOIN barang bar ON bar.id_barang = var.id_barang WHERE barcode = $1;`, [re
         });
     })
 
-    router.get('/edit/:id', (req, res) => {
+    router.get('/edit/:id', async function (req, res) {
         const { json } = req.headers
 
-        db.query('SELECT * FROM barang', (err, rowsB) => {
-            if (err) console.log(err)
-
-
-            const barang = rowsB.rows
-            db.query(`SELECT var.barcode,
+        try {
+            let id = req.params.id
+            let sql = `SELECT var.barcode,
                     var.varian_name,
                     bar.id_barang,
                     bar.nama_barang,
@@ -201,14 +193,20 @@ INNER JOIN barang bar ON bar.id_barang = var.id_barang WHERE barcode = $1;`, [re
                       var.sell_price,
                       var.pictures
 FROM varian var
-INNER JOIN barang bar ON bar.id_barang = var.id_barang WHERE barcode = $1;`, [req.params.id], (err, rows) => {
-                if (err) {
-                    return console.error(err.message);
-                }
-                res.render('varian_edit', { rows: rows.rows, currentDir: 'varian', current: '', barang, satuan, gudang });
-            })
-        })
-    })
+INNER JOIN barang bar ON bar.id_barang = var.id_barang WHERE barcode = $1;`
+            const { rows } = await pool.query(sql, [id])
+            if (json == 'true') {
+                res.status(200).json(rows)
+            } else {
+                res.render('varian_edit')
+            }
+        } catch (e) {
+            console.log(e)
+            res.status(500).json({ message: 'ini eror' })
+        }
+
+    });
+
 
     router.post('/edit/:id', async function (req, res) {
         const { json } = req.headers
@@ -278,4 +276,3 @@ INNER JOIN barang bar ON bar.id_barang = var.id_barang WHERE barcode = $1;`, [re
 
     return router;
 }
-

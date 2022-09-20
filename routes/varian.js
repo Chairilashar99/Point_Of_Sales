@@ -24,7 +24,7 @@ module.exports = function (pool) {
 
 
             const data = await pool.query(sql)
-            console.log(data)
+
             if (json == 'true') {
                 res.status(200).json(data.rows)
             } else {
@@ -132,51 +132,52 @@ INNER JOIN barang bar ON bar.id_barang = var.id_barang WHERE barcode = $1;`
 
     });
 
-    router.post('/add', function (req, res) {
+    router.post('/', async function (req, res) {
+        // console.log(req.body, req.files)
         const { json } = req.headers
+        // console.log(req.headers)
+        console.log(req.body)
+        try {
+            let pictures;
+            let uploadPath;
 
-        let pictures;
-        let uploadPath;
-        if (!req.files || Object.keys(req.files).length === 0) {
-            return res.status(400).send('No files were uploaded.');
+            if (!req.files || Object.keys(req.files).length === 0) {
+                return res.status(400).send('No files were uploaded.');
+            }
+            // The name of the input field (i.e. "pictures") is used to retrieve the uploaded file
+            pictures = req.files.gambar;
+
+            const filename = `A${Date.now()}-${pictures.name}`
+            uploadPath = path.join(__dirname, '../public', 'images', filename);
+
+            console.log(uploadPath)
+            // Use the mv() method to place the file somewhere on your server
+
+            pictures.mv(uploadPath, function (err) {
+                const { barcode, varian_name, stock, buy_price, sell_price, id_barang } = req.body
+                console.log('barcode', barcode)
+                const filename1 = `{${filename}}`
+
+                const rows = pool.query(`INSERT INTO varian( barcode, varian_name, stock, pictures, sell_price, buy_price, id_barang) VALUES ($1, $2, $3, $4, $5, $6, $7)`,
+                    [barcode, varian_name, stock, filename1, sell_price, buy_price, id_barang])
+
+                if (json == 'true') {
+                    res.status(200).json(rows)
+                } else {
+                    res.render('varian')
+                }
+
+                if (err)
+                    return res.status(500).send(err);
+
+                if (err) {
+                    return console.error(err.message);
+                }
+            })
+
+        } catch (err) {
+            res.status(500).json({ message: "gagal add data" })
         }
-        // The name of the input field (i.e. "pictures") is used to retrieve the uploaded file
-        pictures = req.files.pictures;
-        const filename = `A${Date.now()}-${pictures.name}`
-        uploadPath = path.join(__dirname, '/../public', 'pictures', filename);
-        // Use the mv() method to place the file somewhere on your server
-        pictures.mv(uploadPath, function (err) {
-            if (err)
-                return res.status(500).send(err);
-            const { generate, custom_input, nama, stok, harga_jual, harga_beli, barang } = req.body
-            if (generate == 'on') {
-                db.query('SELECT * FROM barcode_varian()', (err, rows) => {
-                    if (err) console.log(err)
-                    let barcode = rows.rows[0].barcode_varian
-                    db.query(`INSERT INTO varian(barcode, varian_name,
-                stock, pictures, sell_price,
-                 buy_price, id_barang) 
-             VALUES ($1, $2, $3, $4, $5, $6, $7)`, [barcode, nama, stok, filename, harga_jual, harga_beli, barang], (err) => {
-                        if (err) {
-                            return console.error(err.message);
-                        }
-                        res.redirect('/varian')
-                    })
-                })
-            }
-            if (generate == 'off') {
-                let barcode = custom_input
-                db.query(`INSERT INTO varian(barcode, varian_name,
-                     stock,pictures, sell_price,
-                      buy_price,id_barang) 
-     VALUES ($1, $2, $3, $4, $5, $6, $7)`, [barcode, nama, stok, filename, harga_jual, harga_beli, barang], (err) => {
-                    if (err) {
-                        return console.error(err.message);
-                    }
-                    res.redirect('/varian')
-                })
-            }
-        });
     })
 
     router.get('/edit/:id', async function (req, res) {

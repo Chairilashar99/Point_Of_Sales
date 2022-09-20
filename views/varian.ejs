@@ -55,7 +55,7 @@
 
       <div class="card">
         <div class="card-header">
-          <h2>Varian Tambah</h2>
+          <h2>Tambah Varian</h2>
         </div>
         <form id="form-tambah" class="forms-group">
           <div class="card-body">
@@ -105,21 +105,26 @@
           </div>
           <div class="card-footer">
             <button type="submit" class="btn btn-primary">Submit</button>
-            <button type="button" id="reset-form-search" class="btn btn-warning">reset</button>
+            <button type="button" id="reset-form-tambah" class="btn btn-warning">reset</button>
           </div>
         </form>
       </div>
     </div>
 
-    <form id="form-edit">
-      <input type="hidden" id="id_varianedit" name="id" value="">
-      <div class="card">
-        <div class="card-header">
-          <h2>Edit varian Barang</h2>
-        </div>
+    <div class="card">
+      <div class="card-header">
+        <h2>Edit Varian</h2>
+      </div>
+      <form id="form-edit" class="forms-group">
 
         <div class="card-body">
 
+          <div class="row mb-3">
+            <label for="barcode" class="col-sm-2 col-form-label">ID Varian</label>
+            <div class="col-sm-10">
+              <input type="text" class="form-control" id="barcodeedit" placeholder="ID varian">
+            </div>
+          </div>
           <div class="row mb-3">
             <label for="varian_name" class="col-sm-2 col-form-label">Nama varian</label>
             <div class="col-sm-10">
@@ -127,16 +132,28 @@
             </div>
           </div>
           <div class="row mb-3">
-            <label for="nomor_hp" class="col-sm-2 col-form-label">Nomor HP</label>
+            <label for="stock" class="col-sm-2 col-form-label">Stock</label>
             <div class="col-sm-10">
-              <input type="tel" class="form-control" id="nomor_hpedit" pattern="[0-9]{4}-[0-9]{4}-[0-9]{4}"
-                placeholder="08xx-xxxx-xxxx">
+              <input type="text" class="form-control" id="stockedit" placeholder="Stok varian">
             </div>
           </div>
           <div class="row mb-3">
-            <label for="alamat_varian" class="col-sm-2 col-form-label">Alamat varian</label>
+            <label for="buy_price" class="col-sm-2 col-form-label">Harga_beli</label>
             <div class="col-sm-10">
-              <textarea class="form-control" id="alamat_varianedit" rows="4"></textarea>
+              <input type="text" class="form-control" id="buy_priceedit" placeholder="Buy varian">
+            </div>
+          </div>
+          <div class="row mb-3">
+            <label for="sell_price" class="col-sm-2 col-form-label">Harga_jual</label>
+            <div class="col-sm-10">
+              <input type="text" class="form-control" id="sell_priceedit" placeholder="Sell varian">
+            </div>
+          </div>
+          <div class="row mb-3">
+            <label for="id_barang" class="col-sm-2 col-form-label">ID Barang</label>
+            <div class="col-sm-10">
+              <select class="form-control" id="id_barangedit">
+              </select>
             </div>
           </div>
         </div>
@@ -211,18 +228,18 @@
   }
 
 
-  const saveEdit = (id_varian, varian_name, alamat_varian, nomor_hp) => {
+  const saveEdit = (barcode, varian_name, stock, buy_price, sell_price, id_barang) => {
     $.ajax({
       method: "PUT",
-      url: `http://localhost:3000/varian/${id_varian}`,
+      url: `http://localhost:3000/varian/${barcode}`,
       dataType: "json",
       headers: {
         json: true
       },
-      data: { varian_name, alamat_varian, nomor_hp }
+      data: { varian_name, stock, buy_price, sell_price, id_barang }
     }).done(function (response) {
       readData()
-      $('#id_varianedit').val('')
+      $('#barcodeedit').val('')
       $("#form-edit").trigger("reset");
     }).fail(function (err) {
       alert('gagal pake jquery save edit')
@@ -239,10 +256,12 @@
       }
     }).done(function (data) {
       console.log(data)
-      $('#id_varianedit').val(data[0].id_varian)
-      $('#varian_nameedit').val(data[0].varian_nama)
-      $('#alamat_varianedit').val(data[0].alamat_varian)
-      $('#nomor_hpedit').val(data[0].nomor_hp)
+      $('#barcodeedit').val(data[0].barcode)
+      $('#varian_nameedit').val(data[0].varian_name)
+      $('#stockedit').val(data[0].stock)
+      $('#buy_priceedit').val(data[0].buy_price)
+      $('#sell_priceedit').val(data[0].sell_price)
+      $('#id_barangedit').val(data[0].id_barang)
     }).fail(function (err) {
       alert('gagal pake jquery')
     })
@@ -296,11 +315,13 @@
 
     $('#form-edit').submit(function (event) {
       event.preventDefault();
-      const id_varian = $('#id_varianedit').val()
-      const varian_nama = $('#varian_nameedit').val()
-      const alamat_varian = $('#alamat_varianedit').val()
-      const nomor_hp = $('#nomor_hpedit').val()
-      saveEdit(id_varian, varian_nama, alamat_varian, nomor_hp)
+      const barcode= $('#barcodeedit').val()
+      const varian_name = $('#varian_nameedit').val()
+      const stock= $('#stockedit').val()
+      const buy_price = $('#buy_priceedit').val()
+      const sell_price = $('#sell_priceedit').val()
+      const id_barang = $('#id_barangedit').val()
+      saveEdit(barcode, varian_name, stock, buy_price, sell_price, id_barang)
     })
 
     $('table tbody').on('click', '.btn-icon-text', function () {

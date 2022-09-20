@@ -180,7 +180,7 @@ INNER JOIN barang bar ON bar.id_barang = var.id_barang WHERE barcode = $1;`
         }
     })
 
-    router.get('/edit/:id', async function (req, res) {
+    router.get('/:barcode',  async function (req, res) {
         const { json } = req.headers
 
         try {
@@ -199,7 +199,7 @@ INNER JOIN barang bar ON bar.id_barang = var.id_barang WHERE barcode = $1;`
             if (json == 'true') {
                 res.status(200).json(rows)
             } else {
-                res.render('varian_edit')
+                res.render('varian')
             }
         } catch (e) {
             console.log(e)
@@ -212,26 +212,13 @@ INNER JOIN barang bar ON bar.id_barang = var.id_barang WHERE barcode = $1;`
     router.post('/edit/:id', async function (req, res) {
         const { json } = req.headers
 
-        const { custom_input, nama, stok, saved_pictures, harga_jual, harga_beli, barang } = req.body
+        try{
         let pictures;
         let uploadPath;
         if (!req.files || Object.keys(req.files).length === 0) {
-            db.query(`UPDATE varian set 
-                varian_name = $1,
-                stock = $2,
-                 pictures = $3,
-                  sell_price = $4,
-                   buy_price = $5,
-                  id_barang = $6,
-              WHERE barcode = $7`, [nama, stok, saved_pictures, harga_jual, harga_beli, barang, custom_input], (err) => {
-                if (err) {
-                    return console.error(err.message);
-                }
-                res.redirect('/varian')
-            })
-        } else {
+           
             // The name of the input field (i.e. "pictures") is used to retrieve the uploaded file
-            pictures = req.files.pictures;
+            pictures = req.files.gambar;
             const filename = `A${Date.now()}-${pictures.name}`
             uploadPath = path.join(__dirname, '/../public', 'pictures', filename);
             // Use the mv() method to place the file somewhere on your server
@@ -251,29 +238,29 @@ INNER JOIN barang bar ON bar.id_barang = var.id_barang WHERE barcode = $1;`
                     if (err) {
                         return console.error(err.message);
                     }
-                    res.redirect('/varian')
+                    res.redirect('varian')
                 })
             })
         }
     })
-    router.get('/delete/:barcode', async function (req, res) {
-        const { json } = req.headers
 
-        try {
-            let id = req.params.barcode
-            let sql = `DELETE FROM varian WHERE barcode = $1`;
+router.delete('/:barcode', async function (req, res) {
+    const { json } = req.headers
+    try {
+        let id = req.params.barcode
+        let sql = `DELETE FROM varian WHERE barcode= $1`;
 
-            const hapus = await pool.query(sql, [id])
-            if (json == 'true') {
-                res.status(200).json(hapus)
-            } else {
-                res.render('varian')
-            }
+        const hapus = await pool.query(sql, [id])
+        if (json == 'true') {
+            res.status(200).json(hapus)
+          } else {
+            res.render('varian')
+          }
         } catch (error) {
-            res.status(500)
-        }
+        res.status(500)
+    }
 
-    });
+});
 
-    return router;
+return router;
 }

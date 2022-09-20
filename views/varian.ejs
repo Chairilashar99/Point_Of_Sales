@@ -32,9 +32,11 @@
                         <th> Pictures</th>
                         <th> Harga Jual</th>
                         <th> Harga Beli</th>
+                        <th> Action</th>
                     </tr>
                 </thead>
                 <tbody>
+                  <!-- <img src="../public/images/Jerukmandarin.jpeg" alt="image" /> -->
                 </tbody>
             </table>
 
@@ -60,15 +62,15 @@
                     <div class="card-body">
 
                         <div class="row mb-3">
-                            <label for="barcode" class="col-sm-2 col-form-label">ID Varian</label>
+                            <label for="barcodes" class="col-sm-2 col-form-label">ID Varian</label>
                             <div class="col-sm-10">
                               <input type="text" class="form-control" id="barcode" placeholder="ID varian">
                             </div>
                         </div>
                         <div class="row mb-3">
-                            <label for="nama_varian" class="col-sm-2 col-form-label">Nama varian</label>
+                            <label for="varian_name" class="col-sm-2 col-form-label">Nama varian</label>
                             <div class="col-sm-10">
-                              <input type="text" class="form-control" id="nama_varian" placeholder="Nama varian">
+                              <input type="text" class="form-control" id="varian_name" placeholder="Nama varian">
                             </div>
                         </div>
                         <div class="row mb-3">
@@ -113,9 +115,9 @@
                 <div class="card-body">
 
                     <div class="row mb-3">
-                        <label for="nama_varian" class="col-sm-2 col-form-label">Nama varian</label>
+                        <label for="varian_name" class="col-sm-2 col-form-label">Nama varian</label>
                         <div class="col-sm-10">
-                          <input type="text" class="form-control" id="nama_varianedit" placeholder="Nama varian">
+                          <input type="text" class="form-control" id="varian_nameedit" placeholder="Nama varian">
                         </div>
                     </div>
                     <div class="row mb-3">
@@ -153,19 +155,20 @@
   
         let html = ''
         data.forEach((item, index) => {
+          console.log(item.pictures)
           html += `
           <tr>
             <td>${item.barcode}</td>
             <td>${item.id_barang}</td>
             <td>${item.nama_barang}</td>
-            <td>${item.name_varian}</td>
+            <td>${item.varian_name}</td>
             <td>${item.stock}</td>
             <td> <img src="../public/images/${item.pictures}" alt="image" /> </td>
             <td>${item.buy_price}</td>
             <td>${item.sell_price}</td>
             <td>
-              <button type="button" class="btn btn-success btn-icon-text" id_data="${item.barcode}"><i class="mdi mdi-file-check btn-icon-append"></i></button>
-              <button type="button" class="btn btn-danger btn-icon-delete" id_data="${item.barcode}"><i class="mdi mdi-trash-can btn-icon-append"></i></button>
+              <button type="button" class="btn btn-success btn-icon-text" id_data="${item.barcode}"><i class="fa-solid fa-pencil"></i></button>
+              <button type="button" class="btn btn-danger btn-icon-delete" id_data="${item.barcode}"><i class="fa-solid fa-trash-can"></i></button>
             </td>
           </tr>
           `
@@ -203,7 +206,7 @@
       })
     }
   
-    const saveData = (id_varian, nomor_hp, nama_varian, alamat_varian) => {
+    const saveData = (id_varian, nomor_hp, varian_name, alamat_varian) => {
       $.ajax({
         method: "POST",
         url: `http://localhost:3000/varian`,
@@ -211,15 +214,15 @@
         headers: {
           json: true
         },
-        data: { nomor_hp, nama_varian, alamat_varian }
+        data: { nomor_hp, varian_name, alamat_varian }
       }).done(function (response) {
         readData()
         $("#form-tambah").trigger("reset");
       }).fail(function (err) {
-        alert('gagal pake jquery save')
+        alert('gagal pake jquery saves') 
       })
     }
-    const saveEdit = (id_varian, nama_varian, alamat_varian, nomor_hp) => {
+    const saveEdit = (id_varian, varian_name, alamat_varian, nomor_hp) => {
       $.ajax({
         method: "PUT",
         url: `http://localhost:3000/varian/${id_varian}`,
@@ -227,7 +230,7 @@
         headers: {
           json: true
         },
-        data: { nama_varian, alamat_varian, nomor_hp }
+        data: { varian_name, alamat_varian, nomor_hp }
       }).done(function (response) {
         readData()
         $('#id_varianedit').val('')
@@ -248,9 +251,9 @@
       }).done(function (data) {
         console.log(data)
         $('#id_varianedit').val(data[0].id_varian)
-        $('#nama_varianedit').val(data[0].nama)
-        $('#alamat_varianedit').val(data[0].alamat)
-        $('#nomor_hpedit').val(data[0].telp)
+        $('#varian_nameedit').val(data[0].varian_nama)
+        $('#alamat_varianedit').val(data[0].alamat_varian)
+        $('#nomor_hpedit').val(data[0].nomor_hp)
       }).fail(function (err) {
         alert('gagal pake jquery')
       })
@@ -280,18 +283,18 @@
         event.preventDefault();
         const id_varian = $('#id_varian').val()
         const nomor_hp = $('#nomor_hp').val()
-        const nama_varian = $('#nama_varian').val()
+        const varian_nama = $('#varian_name').val()
         const alamat_varian = $('#alamat_varian').val()
-        saveData(id_varian, nomor_hp, nama_varian, alamat_varian)
+        saveData(id_varian, nomor_hp, varian_nama, alamat_varian)
       })
   
       $('#form-edit').submit(function (event) {
         event.preventDefault();
         const id_varian = $('#id_varianedit').val()
-        const nama_varian = $('#nama_varianedit').val()
+        const varian_nama = $('#varian_nameedit').val()
         const alamat_varian = $('#alamat_varianedit').val()
         const nomor_hp = $('#nomor_hpedit').val()
-        saveEdit(id_varian, nama_varian, alamat_varian, nomor_hp)
+        saveEdit(id_varian, varian_nama, alamat_varian, nomor_hp)
       })
   
       $('table tbody').on('click', '.btn-icon-text', function () {

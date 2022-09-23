@@ -133,7 +133,7 @@ router.post('/upjual', async function (req, res) {
     try {
         udatejual = await pool.query('UPDATE pembelian SET id_gudang = $1, id_supplier = $2, total_harga_beli = $3, total_bayar_beli = $4, kembalian_beli = $5 WHERE no_invoice = $6 returning *', [req.body.gudangb, req.body.supplierb, req.body.total_harga_beli, req.body.total_bayar_beli, req.body.kembalian, req.body.no_invoice])
         const { rows } = await pool.query('SELECT * FROM pembelian WHERE no_invoice = $1', [req.body.no_invoice])
-        res.json(rows)
+        res.json(rows).
     } catch (e) {
         res.send(e)
     }

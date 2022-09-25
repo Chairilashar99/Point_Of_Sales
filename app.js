@@ -23,8 +23,7 @@ var satuanRouter = require('./routes/satuan')(pool);
 var supplierRouter = require('./routes/supplier')(pool);
 var varianRouter = require('./routes/varian')(pool);
 var gudangRouter = require('./routes/gudang')(pool);
-// var pembelianRouter = require('./routes/pembelian_barang')(pool);
-// var pembeliandetailRouter = require('./routes/pembelian_detail')(pool);
+var pembelianRouter = require('./routes/pembelian')(pool);
 // var penjualanRouter = require('./routes/penjualan_barang')(pool);
 // var penjualandetailRouter = require('./routes/penjualan_detail')(pool);
 
@@ -51,8 +50,7 @@ app.use('/satuan', satuanRouter);
 app.use('/supplier', supplierRouter);
 app.use('/varian', varianRouter);
 app.use('/gudang', gudangRouter);
-// app.use('/pembelian', pembelianRouter);
-// app.use('/pembelian_router', pembeliandetailRouter);
+app.use('/pembelian', pembelianRouter);
 // app.use('/penjualan', penjualanRouter);
 // app.use('/penjualan_router', penjualandetailRouter);
 

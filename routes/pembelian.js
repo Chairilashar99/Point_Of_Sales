@@ -12,8 +12,8 @@ module.exports = function (pool) {
         const { json } = req.headers
 
         try {
-            const { invoice, searchdate1, searchdate2 } = req.query
-            console.log('invoice1 ', invoice)
+            const { invoice, searchdates1, searchdates2 } = req.query
+            console.log('date11 ', searchdates1)
             let search = []
             let count = 1
             let syntax = []
@@ -24,30 +24,30 @@ module.exports = function (pool) {
                 syntax.push(`no_invoice ilike '%' || $${count++} || '%'`)
                 count++
             }
-            if (searchdate1 && searchdate2) {
+            if (searchdates1 && searchdates2) {
                 if (!sql.includes(' WHERE ')) {
                     sql += ' WHERE'
 
                 }
-                search.push(`${searchdate1}`)
-                search.push(`${searchdate2}`)
-                syntax.push(` tanggal_pembelian >= $${count} AND tanggal_pembelian < $${count + 1}`)
+                search.push(`${searchdates1}`)
+                search.push(`${searchdates2}`)
+                syntax.push(` tanggal >= $${count} AND tanggal < $${count + 1}`)
                 count++
                 count++
-            } else if (searchdate1) {
+            } else if (searchdates1) {
                 if (!sql.includes(' WHERE ')) {
                     sql += ' WHERE'
 
                 }
-                search.push(`${searchdate1}`)
+                search.push(`${searchdates1}`)
                 syntax.push(` tanggal >= $${count}`)
                 count++
-            } else if (searchdate2) {
+            } else if (searchdates2) {
                 if (!sql.includes(' WHERE ')) {
                     sql += ' WHERE'
 
                 }
-                search.push(`${searchdate2}`)
+                search.push(`${searchdates2}`)
                 syntax.push(` tanggal <= $${count}`)
                 count++
             }
@@ -63,7 +63,7 @@ module.exports = function (pool) {
             // const operator = await pool.query('SELECT user_id, name, role FROM user ORDER BY user_id');
             const { rows } = await pool.query(sql, search);
             const noInvoice = req.query.noInvoice ? req.query.noInvoice : '';
-            console.log(rows)
+            
             const detail = await pool.query('SELECT bd.* FROM detail_pembelian as bd WHERE bd.no_invoice = $1 ORDER BY bd.id_detail', [noInvoice]);
             const array = [rows, detail.rows]
             

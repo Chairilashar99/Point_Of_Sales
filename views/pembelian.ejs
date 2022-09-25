@@ -35,16 +35,16 @@
                             </div>
                         </div>
                         <div class="row mb-3">
-                            <label for="searchdate1" class="col-sm-2 col-form-label">Date</label>
+                            <label for="searchdates1" class="col-sm-2 col-form-label">Date</label>
                             <div class="col-sm-10">
-                                <input type="date" class="form-control" id="searchdates1" name="searchdate1">
+                                <input type="date" class="form-control" id="searchdates1" name="searchdates1">
                             </div>
                         </div>
                         <p>to</p>
                         <div class="row mb-3">
-                            <label for="searchdate2" class="col-sm-2 col-form-label">Date</label>
+                            <label for="searchdates2" class="col-sm-2 col-form-label">Date</label>
                             <div class="col-sm-10">
-                                <input type="date" class="form-control" id="searchdates2" name="searchdate2">
+                                <input type="date" class="form-control" id="searchdates2" name="searchdates2">
                             </div>
                         </div>
                     </div>
@@ -54,6 +54,8 @@
                     </div>
                 </div>
             </form>
+        </div>
+    </div>
 
     <!-- form -->
     <div class="col-12 grid-margin stretch-card">
@@ -365,6 +367,21 @@ var params = {}
                 alert('data gagal tersave')
 
             })
+        })
+
+        $('#form-search').submit(function (event) {
+            event.preventDefault();
+            const invoice = $('#invoice').val()
+            const searchdates1 = $('#searchdates1').val()
+            const searchdates2 = $('#searchdates2').val()
+            params = { ...params, invoice, searchdates1, searchdates2 }
+            readData()
+        })
+
+        $('#reset-form-search').click(function () {
+            params = {}
+            $("#form-search").trigger("reset");
+            readData()
         })
 
         $('table tbody').on('click', '.link', function (event) {

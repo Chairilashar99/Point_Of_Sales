@@ -180,7 +180,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary">Understood</button>
+
                 </div>
             </div>
         </div>
@@ -257,6 +257,7 @@
                 })
                 $('#total_harga').val(harga);
 
+
                 let dwitel = res
                 let dwi = ''
                 dwitel.forEach((item, index) => {
@@ -268,7 +269,7 @@
             <td>${item.harga_beli}</td>
             <td>${item.total_harga}</td>
           <td>
-            <button type="button" class="btn btn-success btn-icon-text" id_data="${item.id_detail}"><i class="fa-solid fa-pencil"></i></button>
+           
             <button type="button" class="btn btn-danger btn-icon-delete" id_data="${item.id_detail}"><i class="fa-solid fa-trash-can"></i></button>
           </td>
         </tr>
@@ -416,7 +417,6 @@ ${item.barcode} - ${item.varian_name}
 
             alert(`detail ${barcode} added`)
             $("#form-detail").trigger('reset')
-            console.log(invo)
             readData(invo)
         }).fail(function (err) {
             alert('gagal pake jquery save details1')
@@ -424,6 +424,7 @@ ${item.barcode} - ${item.varian_name}
     }
 
     const saveBeli = (no_invoice, id_supplier, id_gudang, id_operator, total_harga) => {
+
         $.ajax({
             method: "PUT",
             url: `http://localhost:3000/pembelian/pbelian/${no_invoice}`,
@@ -439,7 +440,8 @@ ${item.barcode} - ${item.varian_name}
             $("#close").trigger("click")
             readData()
         }).fail(function (err) {
-            alert('gagal pake jquery save details2')
+            console.log(err)
+            alert('gagal pake jquery1', err)
         })
     }
 
@@ -497,6 +499,31 @@ ${item.barcode} - ${item.varian_name}
         })
     }
 
+    const deleted = (id_detail) => {
+        $.ajax({
+            method: "DELETE",
+            url: `http://localhost:3000/pembelian/dtl/${id_detail}`,
+            dataType: "json",
+            headers: {
+                json: true
+            }
+        }).done(function (response) {
+            const invo = $('#no_invoice').val()
+            if (invo) {
+                alert('details deleted')
+                readData(invo)
+            } else {
+                alert('details deleted')
+                readData()
+            }
+        }).fail(function (err) {
+            alert('gagal pake jquery delete')
+        })
+    }
+
+
+
+
     function getAmount() {
         var qty = $('#qty').val();
         var harga = $('#harga_beli').val();
@@ -515,7 +542,6 @@ ${item.barcode} - ${item.varian_name}
             const qty = $('#qty').val()
             const harga_beli = $('#harga_beli').val()
             const total_harga_detail = $('#total_harga_detail').val()
-            console.log(no_invoice, barcode, qty, harga_beli, total_harga_detail)
             saveData(no_invoice, barcode, qty, harga_beli, total_harga_detail)
 
         })
@@ -527,7 +553,9 @@ ${item.barcode} - ${item.varian_name}
             const id_gudang = $('#id_gudang').val()
             const id_operator = $('#id_user').val()
             const total_harga = $('#total_harga').val()
-            saveData(no_invoice, id_supplier, id_gudang, id_user, total_harga)
+            console.log(id_supplier)
+            saveBeli(no_invoice, id_supplier, id_gudang, id_operator, total_harga)
+
 
         })
 
@@ -552,6 +580,18 @@ ${item.barcode} - ${item.varian_name}
         $('table tbody').on('click', '.btn-icon-delete', function () {
             const id = $(this).attr('id_data')
             deleteData(id)
+        })
+
+        $('#detail_pembelian').on('click', '.btn-icon-delete', function (event) {
+            event.preventDefault()
+            const id = $(this).attr('id_detal')
+            deleted(id)
+        })
+
+        $('#beli_detail').on('click', '.btn-icon-delete', function (event) {
+            event.preventDefault()
+            const detail_id = $(this).attr('detail_data')
+            deleted(detail_id)
         })
 
         $('#reset-form-detail').click(function () {

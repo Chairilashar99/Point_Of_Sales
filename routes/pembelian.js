@@ -147,9 +147,10 @@ console.log(total_harga_detail , no_invoice, barcode, qty, harga_beli)
         const {json} = req.headers
         try {
             const {total_harga ,id_supplier, id_gudang, id_operator} = req.body
+            console.log(total_harga ,id_supplier, id_gudang, id_operator)
             const no_invoice = req.params.no_invoice
-        
-            const sqlpembelian = 'UPDATE pembelian SET total_harga = $1, id_supplier = $2, id_gudang = $3, id_operator = $4 WHERE no_invoice = $5 returning *'
+        console.log(no_invoice)
+            const sqlpembelian = 'UPDATE pembelian SET total_harga = $1, supplierid = $2, id_gudang = $3, operatorid = $4 WHERE no_invoice = $5 returning *'
             const sql = await pool.query(sqlpembelian, [total_harga, id_supplier, id_gudang, id_operator, no_invoice])
 
             if(json == 'true') {
@@ -159,6 +160,7 @@ console.log(total_harga_detail , no_invoice, barcode, qty, harga_beli)
             }
             
         } catch (e) {
+            console.log(e)
             res.status(500).json({message: 'put pembelian gagal '})
         }
     });
@@ -230,6 +232,26 @@ console.log(total_harga_detail , no_invoice, barcode, qty, harga_beli)
             res.send(e)
         }
 
+    });
+
+    router.delete('/dtl/:id_detail', async function (req, res) {
+        const { json } = req.headers
+        try {
+            
+            const delDetail = await pool.query('DELETE FROM detail_pembelian WHERE id_detail = $1', [req.params.id_detail])
+            const { rows } = await pool.query('SELECT SUM(total_harga)  AS total FROM detail_pembelian WHERE no_invoice = $1', [req.body.no_invoice])
+
+            const array = [delDetail, rows]
+console.log(delDetail, rows)
+            if(json == 'true') {
+                res.status(200).json(array)
+            } else {
+                res.render('pembelian')
+            }
+            
+        } catch (e) {
+            res.status(500).json({message: ' gagal delete '})
+        }
     });
 
     return router;

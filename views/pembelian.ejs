@@ -553,7 +553,6 @@ ${item.barcode} - ${item.varian_name}
             const id_gudang = $('#id_gudang').val()
             const id_operator = $('#id_user').val()
             const total_harga = $('#total_harga').val()
-            console.log(id_supplier)
             saveBeli(no_invoice, id_supplier, id_gudang, id_operator, total_harga)
 
 
@@ -582,13 +581,13 @@ ${item.barcode} - ${item.varian_name}
             deleteData(id)
         })
 
-        $('#detail_pembelian').on('click', '.btn-icon-delete', function (event) {
+        $('#detail_pembelian').on('click', '.btn-icon-delete', function () {
             event.preventDefault()
             const id = $(this).attr('id_detal')
             deleted(id)
         })
 
-        $('#beli_detail').on('click', '.btn-icon-delete', function (event) {
+        $('#beli_detail').on('click', '.btn-icon-delete', function () {
             event.preventDefault()
             const detail_id = $(this).attr('detail_data')
             deleted(detail_id)

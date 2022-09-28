@@ -128,7 +128,7 @@ module.exports = function (pool) {
         const {json} = req.headers
         try {
             const {total_harga_detail , no_invoice, barcode, qty, harga_beli} = req.body
-console.log(total_harga_detail , no_invoice, barcode, qty, harga_beli)
+
 
             const sqldetail = 'INSERT INTO detail_pembelian(no_invoice, barcode, qty, harga_beli, total_harga)VALUES ($1, $2, $3, $4, $5) returning *'
             const sqld =  await pool.query(sqldetail, [no_invoice, barcode, qty, harga_beli, total_harga_detail])
@@ -147,7 +147,6 @@ console.log(total_harga_detail , no_invoice, barcode, qty, harga_beli)
         const {json} = req.headers
         try {
             const {total_harga ,id_supplier, id_gudang, id_operator} = req.body
-            console.log(total_harga ,id_supplier, id_gudang, id_operator)
             const no_invoice = req.params.no_invoice
         console.log(no_invoice)
             const sqlpembelian = 'UPDATE pembelian SET total_harga = $1, supplierid = $2, id_gudang = $3, operatorid = $4 WHERE no_invoice = $5 returning *'
@@ -242,7 +241,7 @@ console.log(total_harga_detail , no_invoice, barcode, qty, harga_beli)
             const { rows } = await pool.query('SELECT SUM(total_harga)  AS total FROM detail_pembelian WHERE no_invoice = $1', [req.body.no_invoice])
 
             const array = [delDetail, rows]
-console.log(delDetail, rows)
+
             if(json == 'true') {
                 res.status(200).json(array)
             } else {

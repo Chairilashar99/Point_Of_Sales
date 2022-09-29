@@ -31,7 +31,7 @@ module.exports = function (pool) {
                 }
                 search.push(`${searchdates1}`)
                 search.push(`${searchdates2}`)
-                syntax.push(` tanggal >= $${count} AND tanggal < $${count + 1}`)
+                syntax.push(` tanggal BETWEEN $${count} AND  $${count + 1}`)
                 count++
                 count++
             } else if (searchdates1) {

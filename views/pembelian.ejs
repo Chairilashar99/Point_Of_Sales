@@ -270,7 +270,7 @@
             <td>${item.total_harga}</td>
           <td>
            
-            <button type="button" class="btn btn-danger btn-icon-delete" id_data="${item.id_detail}"><i class="fa-solid fa-trash-can"></i></button>
+            <button type="button" class="btn btn-danger btn-icon-delete" detail_data="${item.id_detail}"><i class="fa-solid fa-trash-can"></i></button>
           </td>
         </tr>
         `
@@ -293,6 +293,7 @@
                 },
                 data: params
             }).done(function (pembelian) {
+                params = {...params}
                 let data1 = pembelian[0]
                 let html = ''
                 data1.forEach((item, index) => {
@@ -324,6 +325,9 @@
             <td>${item.qty}</td>
             <td>${item.harga_beli}</td>
             <td>${item.total_harga}</td>
+            <td>
+            <button type="button" class="btn btn-danger btn-icon-delete" id_hps ="${item.id_detail}"><i class="fa-solid fa-trash-can"></i></button>
+          </td>
         </tr>
         `
                 });
@@ -500,6 +504,7 @@ ${item.barcode} - ${item.varian_name}
     }
 
     const deleted = (id_detail) => {
+
         $.ajax({
             method: "DELETE",
             url: `http://localhost:3000/pembelian/dtl/${id_detail}`,
@@ -513,7 +518,7 @@ ${item.barcode} - ${item.varian_name}
                 alert('details deleted')
                 readData(invo)
             } else {
-                alert('details deleted')
+                alert('details deleted table ')
                 readData()
             }
         }).fail(function (err) {
@@ -581,16 +586,26 @@ ${item.barcode} - ${item.varian_name}
             deleteData(id)
         })
 
-        $('#detail_pembelian').on('click', '.btn-icon-delete', function () {
-            event.preventDefault()
-            const id = $(this).attr('id_detal')
-            deleted(id)
-        })
-
         $('#beli_detail').on('click', '.btn-icon-delete', function () {
             event.preventDefault()
             const detail_id = $(this).attr('detail_data')
             deleted(detail_id)
+        })
+
+        $('#detail_pembelian').on('click', '.btn-icon-delete', function () {
+            event.preventDefault()
+            const detail_id = $(this).attr('id_hps')
+            console.log(detail_id)
+            deleted(detail_id)
+        })
+
+        $('#form-search').submit(function (event) {
+            event.preventDefault();
+            const invoice = $('#invoice').val()
+            const dates1 = $('#searchdates1').val()
+            const dates2 = $('#searchdates2').val()
+            params = { ...params, invoice, dates1, dates2 }
+            readData()
         })
 
         $('#reset-form-detail').click(function () {

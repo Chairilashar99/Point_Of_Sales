@@ -27,7 +27,7 @@
         Tambah Pembelian
     </button>
 
-    <div class="container">
+    <div class="rows">
         <div class="card-header">
             <form id="form-search">
                 <div class="card">
@@ -38,21 +38,21 @@
                     <div class="card-body">
 
                         <div class="row mb-3">
-                            <label for="invoice" class="col-sm-2 col-form-label">Invoice</label>
-                            <div class="col-sm-10">
+                            <label for="invoice" class="col-sm-1 col-form-label">Invoice</label>
+                            <div class="col-sm-8">
                                 <input type="text" class="form-control" id="invoice" name="invoice">
                             </div>
                         </div>
                         <div class="row mb-3">
-                            <label for="searchdates1" class="col-sm-2 col-form-label">Date</label>
-                            <div class="col-sm-10">
+                            <label for="searchdates1" class="col-sm-1 col-form-label">Date</label>
+                            <div class="col-sm-8">
                                 <input type="date" class="form-control" id="searchdates1" name="searchdates1">
                             </div>
                         </div>
                         <p>to</p>
                         <div class="row mb-3">
-                            <label for="searchdates2" class="col-sm-2 col-form-label">Date</label>
-                            <div class="col-sm-10">
+                            <label for="searchdates2" class="col-sm-1 col-form-label">Date</label>
+                            <div class="col-sm-8">
                                 <input type="date" class="form-control" id="searchdates2" name="searchdates2">
                             </div>
                         </div>
@@ -563,6 +563,15 @@ ${item.barcode} - ${item.varian_name}
 
         })
 
+        $('#form-search').submit(function (event) {
+            event.preventDefault();
+            const invoice = $('#invoice').val()
+            const dates1 = $('#searchdates1').val()
+            const dates2 = $('#searchdates2').val()
+            params = { ...params, invoice, dates1, dates2 }
+            readData()
+        })
+
         $('#reset-form-search').click(function () {
             params = {}
             $("#form-search").trigger("reset");
@@ -597,15 +606,6 @@ ${item.barcode} - ${item.varian_name}
             const detail_id = $(this).attr('id_hps')
             console.log(detail_id)
             deleted(detail_id)
-        })
-
-        $('#form-search').submit(function (event) {
-            event.preventDefault();
-            const invoice = $('#invoice').val()
-            const dates1 = $('#searchdates1').val()
-            const dates2 = $('#searchdates2').val()
-            params = { ...params, invoice, dates1, dates2 }
-            readData()
         })
 
         $('#reset-form-detail').click(function () {

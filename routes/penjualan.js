@@ -142,7 +142,7 @@ module.exports = function (pool) {
         }
     });
 
-    router.put('/pbelian/:no_invoice', async function (req, res) {
+    router.put('/pjualan/:no_invoice', async function (req, res) {
         const {json} = req.headers
         try {
             const {total_harga , total_bayar, kembalian} = req.body

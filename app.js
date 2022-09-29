@@ -24,7 +24,7 @@ var supplierRouter = require('./routes/supplier')(pool);
 var varianRouter = require('./routes/varian')(pool);
 var gudangRouter = require('./routes/gudang')(pool);
 var pembelianRouter = require('./routes/pembelian')(pool);
-// var penjualanRouter = require('./routes/penjualan_barang')(pool);
+var penjualanRouter = require('./routes/penjualan')(pool);
 // var penjualandetailRouter = require('./routes/penjualan_detail')(pool);
 
 var app = express();
@@ -51,7 +51,7 @@ app.use('/supplier', supplierRouter);
 app.use('/varian', varianRouter);
 app.use('/gudang', gudangRouter);
 app.use('/pembelian', pembelianRouter);
-// app.use('/penjualan', penjualanRouter);
+app.use('/penjualan', penjualanRouter);
 // app.use('/penjualan_router', penjualandetailRouter);
 
 // catch 404 and forward to error handler

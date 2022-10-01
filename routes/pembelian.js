@@ -2,13 +2,14 @@ var express = require('express');
 var router = express.Router();
 var pool = require('pg')
 var moment = require('moment')
+const { isLoggedIn } = require('../helpers/util')
 
 module.exports = function (pool) {
 
 
 
     /* GET home page. */
-    router.get('/', async function (req, res) {
+    router.get('/', isLoggedIn, async function (req, res) {
         const { json } = req.headers
 
         try {
@@ -84,7 +85,7 @@ module.exports = function (pool) {
 
     });
 
-    router.get('/varian/:barcode', async function (req, res) {
+    router.get('/varian/:barcode', isLoggedIn, async function (req, res) {
         const { json } = req.headers
 
         try {
@@ -106,7 +107,7 @@ module.exports = function (pool) {
 
     });
 
-    router.post('/createinvoice', async function (req, res) {
+    router.post('/createinvoice', isLoggedIn, async function (req, res) {
         const {json} = req.headers
 
         try {
@@ -124,7 +125,7 @@ module.exports = function (pool) {
         }
     });
 
-    router.post('/detail', async function (req, res) {
+    router.post('/detail', isLoggedIn, async function (req, res) {
         const {json} = req.headers
         try {
             const {total_harga_detail , no_invoice, barcode, qty, harga_beli} = req.body
@@ -143,7 +144,7 @@ module.exports = function (pool) {
         }
     });
 
-    router.put('/pbelian/:no_invoice', async function (req, res) {
+    router.put('/pbelian/:no_invoice', isLoggedIn, async function (req, res) {
         const {json} = req.headers
         try {
             const {total_harga ,id_supplier, id_gudang, id_operator} = req.body
@@ -187,7 +188,7 @@ module.exports = function (pool) {
 
     // });
     // //v
-    router.get('/details/:no_invoice', async function (req, res) {
+    router.get('/details/:no_invoice', isLoggedIn, async function (req, res) {
         const {json} = req.headers
         try {
             const isiDetail = 'SELECT dp.*, v.varian_name FROM detail_pembelian as dp LEFT JOIN varian as v ON dp.barcode = v.barcode WHERE dp.no_invoice = $1 ORDER BY dp.id_detail'
@@ -203,7 +204,7 @@ module.exports = function (pool) {
         }
     });
 
-    router.delete('/:no_invoice', async function (req, res) {
+    router.delete('/:no_invoice', isLoggedIn, async function (req, res) {
         const { json } = req.headers
         try {
             delPen = await pool.query('DELETE FROM detail_pembelian WHERE no_invoice = $1', [req.params.no_invoice])
@@ -218,7 +219,7 @@ module.exports = function (pool) {
         }
     })
 
-    router.delete('/:id_detail', async function (req, res) {
+    router.delete('/:id_detail', isLoggedIn, async function (req, res) {
         const { json } = req.headers
         try {
             
@@ -233,7 +234,7 @@ module.exports = function (pool) {
 
     });
 
-    router.delete('/dtl/:id_detail', async function (req, res) {
+    router.delete('/dtl/:id_detail', isLoggedIn, async function (req, res) {
         const { json } = req.headers
         try {
             

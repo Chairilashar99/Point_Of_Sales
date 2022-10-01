@@ -1,15 +1,17 @@
 var express = require('express');
 var router = express.Router();
-
+const { isLoggedIn } = require('../helpers/util')
 
 module.exports = function (pool) {
-  router.get('/', async function (req, res, next) {
+  router.get('/', isLoggedIn, async function (req, res, next) {
     const { json } = req.headers
-
+    const user = req.session.user
+console.log(req.session.user)
     try {
       const { rows } = await pool.query('SELECT * FROM barang');
+      const array = [rows, user]
       if (json == 'true') {
-        res.status(200).json(rows)
+        res.status(200).json(array)
       } else {
         res.render('barang')
       }
@@ -20,7 +22,7 @@ module.exports = function (pool) {
 
   });
 
-  router.post('/', async function (req, res) {
+  router.post('/', isLoggedIn, async function (req, res) {
     const { json } = req.headers
 
     try {
@@ -39,7 +41,7 @@ module.exports = function (pool) {
 
   });
 
-  router.get('/:id_barang', async function (req, res) {
+  router.get('/:id_barang', isLoggedIn, async function (req, res) {
     const { json } = req.headers
 
     try {
@@ -59,7 +61,7 @@ module.exports = function (pool) {
 
   });
 
-  router.put('/:id_barang', async function (req, res) {
+  router.put('/:id_barang', isLoggedIn, async function (req, res) {
     const { json } = req.headers
 
     try {
@@ -82,7 +84,7 @@ module.exports = function (pool) {
     }
   });
 
-  router.delete('/:id_barang', async function (req, res) {
+  router.delete('/:id_barang', isLoggedIn, async function (req, res) {
     const { json } = req.headers
     try {
       let id = req.params.id_barang

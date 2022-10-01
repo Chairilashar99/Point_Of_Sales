@@ -51,6 +51,8 @@ app.use(session({
   saveUninitialized: true
 }))
 
+app.use(flash());
+
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/barang', barangRouter);

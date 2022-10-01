@@ -113,6 +113,11 @@
                 </label>
             </div>
             <button class="w-100 btn btn-lg btn-primary" type="submit">Sign in</button>
+            <% if(info.length > 0) { %>
+            <div class="alert alert-danger" role="alert">
+                <%= info %>
+              </div>
+              <% } %>
             <p class="mt-5 mb-3 text-muted">doesn't have account?, please <a href="/register">sign up</a></p>
         </form>
     </main>

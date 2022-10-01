@@ -1,8 +1,9 @@
 var express = require('express');
 var router = express.Router();
+const { isLoggedIn } = require('../helpers/util')
 
 module.exports = function (pool) {
-    router.get('/', async function (req, res, next) {
+    router.get('/', isLoggedIn, async function (req, res, next) {
         const { json } = req.headers
 
         try {
@@ -18,7 +19,7 @@ module.exports = function (pool) {
         }
 
     });
-    router.post('/', async function (req, res) {
+    router.post('/', isLoggedIn, async function (req, res) {
         const { json } = req.headers
 
         try {
@@ -37,7 +38,7 @@ module.exports = function (pool) {
 
     });
 
-    router.get('/:id_supplier', async function (req, res) {
+    router.get('/:id_supplier', isLoggedIn, async function (req, res) {
         const { json } = req.headers
 
         try {
@@ -57,7 +58,7 @@ module.exports = function (pool) {
 
     });
 
-    router.put('/:id_supplier', async function (req, res) {
+    router.put('/:id_supplier', isLoggedIn, async function (req, res) {
         const { json } = req.headers
 
         try {
@@ -84,7 +85,7 @@ module.exports = function (pool) {
         }
     });
 
-    router.delete('/:id_supplier', async function (req, res) {
+    router.delete('/:id_supplier', isLoggedIn, async function (req, res) {
         const { json } = req.headers
         try {
             let id = req.params.id_supplier

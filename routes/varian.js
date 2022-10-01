@@ -4,11 +4,12 @@ var pool = require('pg');
 var path = require('path')
 var moment = require('moment');
 const fileUpload = require('express-fileupload');
+const { isLoggedIn } = require('../helpers/util')
 
 
 module.exports = function (pool) {
 
-    router.get('/', async function (req, res) {
+    router.get('/', isLoggedIn, async function (req, res) {
         const { json } = req.headers
 
         try {
@@ -41,7 +42,7 @@ module.exports = function (pool) {
     })
 
 
-    router.get('/select', async function (req, res) {
+    router.get('/select', isLoggedIn, async function (req, res) {
         const { json } = req.headers
 
         try {
@@ -91,7 +92,7 @@ module.exports = function (pool) {
 
 
 
-    router.post('/', async function (req, res) {
+    router.post('/', isLoggedIn, async function (req, res) {
         // console.log(req.body, req.files)
         const { json } = req.headers
         // console.log(req.headers)
@@ -139,7 +140,7 @@ module.exports = function (pool) {
         }
     })
 
-    router.get('/:id', async function (req, res) {
+    router.get('/:id', isLoggedIn, async function (req, res) {
         const { json } = req.headers
 
         try {
@@ -167,7 +168,7 @@ INNER JOIN barang bar ON bar.id_barang = var.id_barang WHERE barcode = $1;`
 
     });
 
-    router.put('/:id', async function (req, res) {
+    router.put('/:id', isLoggedIn, async function (req, res) {
         console.log('body', req.body)
         const { json } = req.headers
         try {
@@ -219,7 +220,7 @@ INNER JOIN barang bar ON bar.id_barang = var.id_barang WHERE barcode = $1;`
         }
     });
 
-    router.delete('/:barcode', async function (req, res) {
+    router.delete('/:barcode', isLoggedIn, async function (req, res) {
         const { json } = req.headers
         try {
             let id = req.params.barcode

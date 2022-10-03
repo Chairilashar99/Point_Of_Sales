@@ -94,7 +94,8 @@
 <body class="text-center">
 
     <main class="form-signin w-100 m-auto">
-        <form method="post">
+        
+            <form action="/login" method="post"></form>
             <img class="mb-4" src="/stylesheets/bootstrap-logo.svg" alt="" width="72" height="57">
             <h1 class="h3 mb-3 fw-normal">Please sign in</h1>
 
@@ -113,11 +114,11 @@
                 </label>
             </div>
             <button class="w-100 btn btn-lg btn-primary" type="submit">Sign in</button>
-            <% if(info.length > 0) { %>
+            <!-- <% if(info.length > 0) { %>
             <div class="alert alert-danger" role="alert">
                 <%= info %>
               </div>
-              <% } %>
+              <% } %> -->
             <p class="mt-5 mb-3 text-muted">doesn't have account?, please <a href="/register">sign up</a></p>
         </form>
     </main>

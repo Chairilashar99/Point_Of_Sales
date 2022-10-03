@@ -8,7 +8,7 @@ var session = require('express-session')
 var flash = require('connect-flash');
 
 
-const {Pool,Client} = require('pg')
+const {Pool} = require('pg')
 const pool = new Pool({
   user: 'heril',
   host: 'localhost',
@@ -49,7 +49,7 @@ app.use(session({
   secret: 'rubicamp',
   resave: false,
   saveUninitialized: true
-}))
+}));
 
 app.use(flash());
 

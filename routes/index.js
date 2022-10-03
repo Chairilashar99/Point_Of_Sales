@@ -14,29 +14,55 @@ module.exports = function (pool) {
   });
 
   router.post('/', async function (req, res) {
-     try{
-    const { email, password } = req.body
-    console.log(email, password)
-    
-    const {rows} = await pool.query('select * from users where email = $1', [email])
-   
-    if(rows.length == 0) {
-      throw 'email tidak terdaftar'
-    }
-  
-    const match = await bcrypt.compare(password, rows[0].password);
+    try {
+      //       const { email, password } = req.body
+      //       console.log(email, password)
 
-    if (!match) {
-      throw 'password salah'
-    }
-  
-    res.render('barang')
-  } catch (err) {
-    console.log(err)
-    req.flash('info', err)
-    res.redirect('/login')
-    }
-})
+      //       const { rows } = await pool.query('select * from users where email = $1', [email])
+      // console.log(rows)
+      //       if (rows.length == 0) {
+      //         throw 'email tidak terdaftar'
+      //       }
+      const { email, password } = req.body
+      await pool.query('SELECT * FROM users where email = $1', [email], (err, data) => {
+        if (err) {
+          console.log(err)
+          return res.send(err)
+        }
+        if (data.rows.length == 0) {
+          req.flash('info', 'email not found')
+          return res.redirect('/login')
+        }
+        bcrypt.compare(password, data.rows[0].password, function (err, result) {
+          if (err) {
+            console.log(err)
+            return res.send(err)
+          }
+          if (!result) {
+            req.flash('info', 'incorrect password')
+            return res.redirect('/login')
+          }
+          req.session.user = data.rows[0]
+          res.redirect('/utama')
+
+        })
+      })
+        // const match = await bcrypt.compare(password, rows[0].password);
+        // console.log(password, rows[0].password)
+
+        // if (!match) {
+        //   throw 'password salah'
+        // }
+
+        // req.session.user = data.rows[0]
+        // console.log('login done', req.session.user)
+        // res.redirect('/barang')
+      } catch (err) {
+        console.log(err)
+        req.flash('info', err)
+        // res.redirect('/barang')
+      }
+    })
 
   router.get('/register', function (req, res) {
     res.render('register', { info: req.flash('info') })
@@ -58,7 +84,7 @@ module.exports = function (pool) {
       const hash = bcrypt.hashSync(password, saltRounds);
       const createUser = await pool.query('insert into users(email, name, password, role) values($1, $2, $3, $4)', [email, name, hash, role])
       req.flash('info', 'selamat, akun anda telah dibuat, silahkan login')
-      res.redirect('/login')
+      res.redirect('/')
     } catch (err) {
       console.log(err)
       req.flash('info', err)
@@ -68,7 +94,7 @@ module.exports = function (pool) {
 
   router.get('/logout', (req, res) => {
     req.session.destroy(function (err) {
-      res.redirect('/login')
+      res.redirect('/')
     })
   })
 

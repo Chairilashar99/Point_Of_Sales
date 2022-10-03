@@ -3,7 +3,7 @@ var router = express.Router();
 const { isLoggedIn } = require('../helpers/util')
 
 module.exports = function (pool) {
-  router.get('/', isLoggedIn, async function (req, res, next) {
+  router.get('/',isLoggedIn, async function (req, res, next) {
     const { json } = req.headers
     const user = req.session.user
 console.log(req.session.user)

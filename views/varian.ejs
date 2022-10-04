@@ -101,13 +101,13 @@
         </li>
 
         <li>
-          <a href="login.html" target="_blank">
+          <a href="/" target="_blank">
             <i class="zmdi zmdi-lock"></i> <span>Login</span>
           </a>
         </li>
 
         <li>
-          <a href="register.html" target="_blank">
+          <a href="/register" target="_blank">
             <i class="zmdi zmdi-account-circle"></i> <span>Registration</span>
           </a>
         </li>
@@ -237,7 +237,7 @@
                 <div class="card-body">
                   <h5 class="card-title">Varian</h5>
                   <div class="table-responsive">
-                    <table class="table">
+                    <table class="table align-items-center table-flush table-borderless">
                       <thead id="sorting">
                         <tr>
                           <th> Barcode </th>
@@ -251,8 +251,8 @@
                           <th> Action</th>
                         </tr>
                       </thead>
-                      <tbody>
-                        <!-- <img src="../public/images/Jerukmandarin.jpeg" alt="image" /> -->
+                      <tbody encType="multipart/form-data">
+
                       </tbody>
                     </table>
 
@@ -394,6 +394,7 @@
                     </form>
                   </div>
                 </div>
+               
     </body>
 
     <script src="https://code.jquery.com/jquery-3.6.1.js"
@@ -413,6 +414,7 @@
         }).done(function (data) {
           let html = ''
           data.forEach((item, index) => {
+            console.log(item.pictures[0])
             html += `
           <tr>
             <td>${item.barcode}</td>
@@ -420,8 +422,12 @@
             <td>${item.nama_barang}</td>
             <td>${item.varian_name}</td>
             <td>${item.stock}</td>
-            <td> <img src="../public/images/${item.pictures}" alt="image" /> </td>
-            <td>${item.buy_price}</td>
+            <td> 
+              <a target="_blank"
+                href="/images/${item.pictures[0]}">
+              <img class="product-img" src="/images/${item.pictures[0]}" width="50" alt="image" /> </td>
+            </a>
+              <td>${item.buy_price}</td>
             <td>${item.sell_price}</td>
             <td>
               <button type="button" class="btn btn-success btn-icon-text" id_data="${item.barcode}"><i class="zmdi zmdi-edit"></i></button>

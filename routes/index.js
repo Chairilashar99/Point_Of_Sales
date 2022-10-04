@@ -15,14 +15,7 @@ module.exports = function (pool) {
 
   router.post('/', async function (req, res) {
     try {
-      //       const { email, password } = req.body
-      //       console.log(email, password)
 
-      //       const { rows } = await pool.query('select * from users where email = $1', [email])
-      // console.log(rows)
-      //       if (rows.length == 0) {
-      //         throw 'email tidak terdaftar'
-      //       }
       const { email, password } = req.body
       await pool.query('SELECT * FROM users where email = $1', [email], (err, data) => {
         if (err) {
@@ -31,7 +24,7 @@ module.exports = function (pool) {
         }
         if (data.rows.length == 0) {
           req.flash('info', 'email not found')
-          return res.redirect('/login')
+          return res.redirect('/')
         }
         bcrypt.compare(password, data.rows[0].password, function (err, result) {
           if (err) {
@@ -40,23 +33,14 @@ module.exports = function (pool) {
           }
           if (!result) {
             req.flash('info', 'incorrect password')
-            return res.redirect('/login')
+            return res.redirect('/')
           }
           req.session.user = data.rows[0]
           res.redirect('/utama')
 
         })
       })
-        // const match = await bcrypt.compare(password, rows[0].password);
-        // console.log(password, rows[0].password)
-
-        // if (!match) {
-        //   throw 'password salah'
-        // }
-
-        // req.session.user = data.rows[0]
-        // console.log('login done', req.session.user)
-        // res.redirect('/barang')
+    
       } catch (err) {
         console.log(err)
         req.flash('info', err)

@@ -13,15 +13,15 @@ module.exports = function (pool) {
         const { json } = req.headers
 
         try {
-            const { invoice, searchdates1, searchdates2 } = req.query
+            const { searchinvoice, searchdates1, searchdates2 } = req.query
             
             let search = []
             let count = 1
             let syntax = []
             let sql = 'SELECT * FROM penjualan'
-            if (invoice) {
+            if (searchinvoice) {
                 sql += ' WHERE '
-                search.push(`%${invoice}%`)
+                search.push(`%${searchinvoice}%`)
                 syntax.push(`no_invoice ilike '%' || $${count++} || '%'`)
                 count++
             }
@@ -129,8 +129,8 @@ module.exports = function (pool) {
         try {
             const {total_harga_detail , no_invoice, barcode, qty, harga_jual} = req.body
 
-
-            const sqldetail = 'INSERT INTO detail_penjualan(no_invoice, barcode, qty, harga_beli, total_harga)VALUES ($1, $2, $3, $4, $5) returning *'
+console.log(total_harga_detail , no_invoice, barcode, qty, harga_jual)
+            const sqldetail = 'INSERT INTO detail_penjualan(no_invoice, barcode, qty, harga_jual, total_harga)VALUES ($1, $2, $3, $4, $5) returning *'
             const sqld =  await pool.query(sqldetail, [no_invoice, barcode, qty, harga_jual, total_harga_detail])
             if(json == 'true') {
                 res.status(200).json(sqld)

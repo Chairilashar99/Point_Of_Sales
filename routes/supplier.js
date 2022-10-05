@@ -11,7 +11,7 @@ module.exports = function (pool) {
             if (json == 'true') {
                 res.status(200).json(rows)
             } else {
-                res.render('supplier')
+                res.render('supplier', { users: req.session.user })
             }
         } catch (e) {
             console.log(e)

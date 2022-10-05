@@ -13,7 +13,8 @@ console.log(req.session.user)
       if (json == 'true') {
         res.status(200).json(array)
       } else {
-        res.render('barang')
+        res.render('barang', { users: req.session.user })
+
       }
     } catch (e) {
       console.log(e)
@@ -101,6 +102,7 @@ console.log(req.session.user)
     }
 
   });
+  
 
   return router;
 }

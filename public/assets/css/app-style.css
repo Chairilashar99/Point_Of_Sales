@@ -930,9 +930,10 @@ body.bg-theme15 {
 
 .btn-secondary {
 	color: #fff;
-	background-color: #94614f;
-	border-color: #94614f
+	background-color: #6a27e0;
+	border-color: #6a27e0
 }
+
 .btn-secondary:hover {
 	color: #fff;
 	background-color: #82503f;
@@ -1654,7 +1655,7 @@ body.bg-theme15 {
 }
 
 label {
-    color: rgba(255, 255, 255, 0.75);
+    color: rgb(255, 255, 255);
     font-size: .75rem;
     text-transform: uppercase;
     letter-spacing: 1px;
@@ -1707,8 +1708,8 @@ label {
 
 .form-control{
   border: 0px solid #e5eaef;
-  background-color: rgba(255, 255, 255, 0.2);
-  color: #fff !important;
+  background-color: rgba(0, 0, 0, 0.226);
+  color: rgb(0, 0, 0) !important;
 }
 
 .form-control:focus{
@@ -1725,7 +1726,7 @@ label {
 }
 
 .form-control:disabled, .form-control[readonly] {
-    background-color: rgba(21, 14, 14, 0.45);
+    background-color: rgba(0, 0, 0, 0.226);
     opacity: 1;
 }
 

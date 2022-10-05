@@ -83,7 +83,7 @@ module.exports = function (pool) {
   })
 
   router.get('/utama', isLoggedIn, function (req, res) {
-    res.render("utama")
+    res.render("utama", { users: req.session.user })
 
   })
 

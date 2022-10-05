@@ -30,7 +30,7 @@ module.exports = function (pool) {
             if (json == 'true') {
                 res.status(200).json(data.rows)
             } else {
-                res.render('varian')
+                res.render('varian', { users: req.session.user })
             }
 
 

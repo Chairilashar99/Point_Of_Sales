@@ -74,7 +74,7 @@ module.exports = function (pool) {
                 res.status(200).json(array)
 
             } else {
-                res.render('penjualan')
+                res.render('penjualan', { users: req.session.user })
             }
 
         } catch (e) {

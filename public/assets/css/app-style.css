@@ -1709,7 +1709,7 @@ label {
 .form-control{
   border: 0px solid #e5eaef;
   background-color: rgba(0, 0, 0, 0.226);
-  color: rgb(0, 0, 0) !important;
+  color: rgb(253, 247, 247) !important;
 }
 
 .form-control:focus{

@@ -44,7 +44,7 @@ module.exports = function (pool) {
       } catch (err) {
         console.log(err)
         req.flash('info', err)
-        // res.redirect('/barang')
+        res.redirect('/')
       }
     })
 

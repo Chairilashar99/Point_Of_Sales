@@ -75,7 +75,7 @@ module.exports = function (pool) {
                 res.status(200).json(array)
 
             } else {
-                res.render('pembelian')
+                res.render('pembelian', { users: req.session.user })
             }
 
         } catch (e) {

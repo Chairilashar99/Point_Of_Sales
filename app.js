@@ -1,3 +1,4 @@
+require('dotenv').config()
 var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
@@ -10,11 +11,11 @@ var flash = require('connect-flash');
 
 const {Pool} = require('pg')
 const pool = new Pool({
-  user: 'heril',
-  host: 'localhost',
-  database: 'posdb',
-  password: '12345',
-  port: 5432,
+  user: process.env.DB_USER,
+  host: process.env.DB_HOST,
+  database:  process.env.DB_NAME,
+  password:  process.env.DB_PASS,
+  port: process.env.DB_PORT,
 })
 
 
